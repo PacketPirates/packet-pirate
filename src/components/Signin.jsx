@@ -14,7 +14,7 @@ const Signin = () => {
     e.preventDefault();
     try {
       await signIn(email, password);
-      navigate("/Account"); // this goes to the homepage
+      navigate("/Account"); 
     } catch (e) {
       setErrorMessage("Invalid login input or not registered yet!");
       console.log(e.message);
@@ -34,7 +34,7 @@ const Signin = () => {
               Register.
             </Link>
             {errorMessage && <div className="error text-red-500"> {errorMessage} </div>}{" "}
-            {/* This needs to be styled so that its red */}
+         
           </p>
         </div>
 
