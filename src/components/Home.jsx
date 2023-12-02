@@ -3,7 +3,6 @@ import { useNavigate} from "react-router-dom";
 import { firestore } from "../firebase.js";
 
 import { UserAuth } from "../context/AuthContext";
-import { collection } from "firebase/firestore";
 const Home = () => {
   const { logout } = UserAuth();
   const navigate = useNavigate();
@@ -18,7 +17,8 @@ const {
   query,
 } = require('firebase/firestore');
 
-var _networks;
+var securityProtocols = ["open", "WEP", "WPA_PSK", "WPA2_PSK", "WPA_WPA2_PSK", "WPA2_ENTERPRISE", "Unknown"];
+
 var list = document.getElementById("networkList");
 var data = collection(firestore, "devices");
 const dataQuery = query(data);
@@ -27,10 +27,12 @@ getDocs(dataQuery).then((devices) => {
     var networkData = collection(firestore, "devices", device.id, "networks");
     const networkQuery = query(networkData);
     getDocs(networkQuery).then((networks) => {
-      _networks = networks;
-      // networks.forEach((network) => {
-      //   console.log(network.data());
-      // });
+      networks.forEach((network) => {
+        console.log(network.data());
+        var li = document.createElement('li');
+        li.innerText = "SSID: " + network.data().ssid + ", ID: " + network.data().id + ", Auth Mode: " + securityProtocols.at(network.data().authmode);
+        list.appendChild(li);
+      });
     });
   });
 });
@@ -48,19 +50,8 @@ return (
         <div className="postTextContainer text-center">  </div>
 
         <div className="postTextContainer ">
-        <ul id="networkList"></ul>
-        <script>
-            {_networks.forEach((network) => {
-              var li = document.createElement('li');
-              li.innerText = network.data();
-              list.appendChild(li);
-            })}
-        </script>
+          <ul id="networkList"></ul>
         </div>
-    
-        
-        
-        
         
       </div>
       <div className="post">
