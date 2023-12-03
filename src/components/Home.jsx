@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate} from "react-router-dom";
 import { firestore } from "../firebase.js";
 
@@ -17,6 +17,9 @@ const {
   query,
 } = require('firebase/firestore');
 
+const [selectedValue, setSelectedValue] = useState('');
+const [options, setOptions] = useState([]);
+
 var securityProtocols = ["open", "WEP", "WPA_PSK", "WPA2_PSK", "WPA_WPA2_PSK", "WPA2_ENTERPRISE", "Unknown"];
 
 var list = document.getElementById("networkList");
@@ -24,6 +27,9 @@ var data = collection(firestore, "devices");
 const dataQuery = query(data);
 getDocs(dataQuery).then((devices) => {
   devices.forEach((device) => {
+    if (!options.includes(device)) {
+      options.push(device.id);
+    }
     var networkData = collection(firestore, "devices", device.id, "networks");
     const networkQuery = query(networkData);
     getDocs(networkQuery).then((networks) => {
@@ -84,10 +90,26 @@ const crackHash = (networkData) => {
   crackedHashList.appendChild(crackedHashEntry);
 };
 
+const handleSelectChange = (event) => {
+  const value = event.target.value;
+  setSelectedValue(value);
+};
+
 return (
   <div name="Home" className="nav-link w-full min-h-screen bg-gradient-to-b from-sky-500 to-blue-900 text-black">
   <div className="max-w-screen-lg p-4 mx-auto flex flex-col justify-center w-full h-full">
     <div className="homePage">
+      <div>
+        <select value={selectedValue} onChange={handleSelectChange}>
+          <option value="">Select...</option>
+          {options.map((option, index) => (
+            <option key={index} value={option}>
+              {option}
+            </option>
+          ))}
+        </select>
+        {selectedValue && <p>Displaying Networks for: {selectedValue}</p>}
+      </div>
       <div className="post">
         <div className="postHeader">
           
