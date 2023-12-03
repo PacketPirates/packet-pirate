@@ -56,7 +56,7 @@ return (
       </div>
       <div className="post">
         <div className="postHeader">
-        Deauthentication
+        Capture Handshake
           
         </div>
         
@@ -72,7 +72,7 @@ return (
       <div className="post">
         <div className="postHeader">
           
-          Decryption
+          Crack Hash
         </div>
         
         <div className="postTextContainer text-center">  </div>
