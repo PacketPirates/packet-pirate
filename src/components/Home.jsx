@@ -27,24 +27,48 @@ getDocs(dataQuery).then((devices) => {
     var networkData = collection(firestore, "devices", device.id, "networks");
     const networkQuery = query(networkData);
     getDocs(networkQuery).then((networks) => {
-      networks.forEach((network) => {
-        console.log(network.data());
-        var li = document.createElement('li');
-        li.innerText = "SSID: " + network.data().ssid + ", ID: " + network.data().id + ", Auth Mode: " + securityProtocols.at(network.data().authmode);
-        list.appendChild(li);
+    networks.forEach((network) => {
+    console.log(network.data());
+    
+
+    // had to combine text and button to form it in the list
+    var networkEntry = document.createElement('div');
+    networkEntry.classList.add('network-entry');
+
+  
+    var li = document.createElement('li');
+    li.innerText = "SSID: " + network.data().ssid + ", ID: " + network.data().id + ", Auth Mode: " + securityProtocols.at(network.data().authmode);
+    
+    
+    var captureButton = document.createElement('button');
+    captureButton.innerText = 'Capture Handshake';
+    captureButton.addEventListener("click", () => {
+      captureHandshake(network.data()); 
+    });
+    
+    networkEntry.appendChild(li);
+    networkEntry.appendChild(captureButton);
+
+    
+    list.appendChild(networkEntry);
       });
     });
   });
 });
 
+const captureHandshake = (networkData) => {
+  //  capture handshake logic here
+  console.log("Capturing handshake for network:", networkData);
+};
+
 return (
-  <div name="Home"className="nav-link w-full h-screen bg-gradient-to-b from-sky-500 to-blue-900 text-black ">
+  <div name="Home" className="nav-link w-full min-h-screen bg-gradient-to-b from-sky-500 to-blue-900 text-black">
   <div className="max-w-screen-lg p-4 mx-auto flex flex-col justify-center w-full h-full">
     <div className="homePage">
       <div className="post">
         <div className="postHeader">
           
-        Data Collection
+        Scanned Networks
         </div>
         
         <div className="postTextContainer text-center">  </div>
