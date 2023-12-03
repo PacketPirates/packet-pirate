@@ -55,7 +55,7 @@ getDocs(dataQuery).then((devices) => {
 
 var capturedNetworkList = document.getElementById("capturedNetworkList");
 var capturedNetworkEntry = document.createElement('div');
-capturedNetworkEntry.classList.add('captured-network-entry');
+capturedNetworkEntry.classList.add('network-entry');
 var capturedNetwork = document.createElement('li');
 const captureHandshake = (networkData) => {
   //  capture handshake logic here
