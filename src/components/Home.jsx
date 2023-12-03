@@ -28,8 +28,6 @@ getDocs(dataQuery).then((devices) => {
     const networkQuery = query(networkData);
     getDocs(networkQuery).then((networks) => {
     networks.forEach((network) => {
-    console.log(network.data());
-    
 
     // had to combine text and button to form it in the list
     var networkEntry = document.createElement('div');
@@ -56,9 +54,16 @@ getDocs(dataQuery).then((devices) => {
   });
 });
 
+var capturedNetworkList = document.getElementById("capturedNetworkList");
+var capturedNetworkEntry = document.createElement('div');
+capturedNetworkEntry.classList.add('captured-network-entry');
+var capturedNetwork = document.createElement('li');
 const captureHandshake = (networkData) => {
   //  capture handshake logic here
-  console.log("Capturing handshake for network:", networkData);
+  capturedNetwork.innerText = "SSID: " + networkData.ssid + ", ID: " + networkData.id + ", Auth Mode: " + securityProtocols.at(networkData.authmode);
+  capturedNetworkEntry.appendChild(capturedNetwork);
+  capturedNetworkList.appendChild(capturedNetworkEntry);
+  console.log(capturedNetworkEntry);
 };
 
 return (
@@ -84,13 +89,13 @@ return (
           
         </div>
         
-        <div className="postTextContainer text-center">  </div>
+        <div className="postTextContainer text-center">
+          <ul id="capturedNetworkList"></ul>
+        </div>
 
-        <div className="postTextContainer "> Data </div>
-    
-        
-        
-        
+        <div className="postTextContainer "> 
+          
+        </div> 
         
       </div>
       <div className="post">
@@ -102,10 +107,6 @@ return (
         <div className="postTextContainer text-center">  </div>
 
         <div className="postTextContainer "> Data </div>
-    
-        
-        
-        
         
       </div>
     </div>
