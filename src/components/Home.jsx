@@ -28,27 +28,26 @@ getDocs(dataQuery).then((devices) => {
     const networkQuery = query(networkData);
     getDocs(networkQuery).then((networks) => {
     networks.forEach((network) => {
+        // had to combine text and button to form it in the list
+        var networkEntry = document.createElement('div');
+        networkEntry.classList.add('network-entry');
 
-    // had to combine text and button to form it in the list
-    var networkEntry = document.createElement('div');
-    networkEntry.classList.add('network-entry');
+      
+        var li = document.createElement('li');
+        li.innerText = "SSID: " + network.data().ssid + ", ID: " + network.data().id + ", Auth Mode: " + securityProtocols.at(network.data().authmode);
+        
+        
+        var captureButton = document.createElement('button');
+        captureButton.innerText = 'Capture Handshake';
+        captureButton.addEventListener("click", () => {
+          captureHandshake(network.data()); 
+        });
+        
+        networkEntry.appendChild(li);
+        networkEntry.appendChild(captureButton);
 
-  
-    var li = document.createElement('li');
-    li.innerText = "SSID: " + network.data().ssid + ", ID: " + network.data().id + ", Auth Mode: " + securityProtocols.at(network.data().authmode);
-    
-    
-    var captureButton = document.createElement('button');
-    captureButton.innerText = 'Capture Handshake';
-    captureButton.addEventListener("click", () => {
-      captureHandshake(network.data()); 
-    });
-    
-    networkEntry.appendChild(li);
-    networkEntry.appendChild(captureButton);
-
-    
-    list.appendChild(networkEntry);
+        
+        list.appendChild(networkEntry);
       });
     });
   });
@@ -61,9 +60,28 @@ var capturedNetwork = document.createElement('li');
 const captureHandshake = (networkData) => {
   //  capture handshake logic here
   capturedNetwork.innerText = "SSID: " + networkData.ssid + ", ID: " + networkData.id + ", Auth Mode: " + securityProtocols.at(networkData.authmode);
-  capturedNetworkEntry.appendChild(capturedNetwork);
-  capturedNetworkList.appendChild(capturedNetworkEntry);
-  console.log(capturedNetworkEntry);
+  if (!capturedNetworkEntry.contains(capturedNetwork)) {
+    capturedNetworkEntry.appendChild(capturedNetwork);
+    
+    var crackButton = document.createElement('button');
+    crackButton.innerText = 'Crack Hash';
+    crackButton.addEventListener("click", () => {
+      crackHash(networkData);
+    });
+    
+    capturedNetworkEntry.appendChild(crackButton);
+    capturedNetworkList.appendChild(capturedNetworkEntry);
+  }
+};
+
+var crackedHashList = document.getElementById("crackedHashList");
+var crackedHashEntry = document.createElement('div');
+crackedHashEntry.classList.add('cracked-hash-entry');
+var crackedHash = document.createElement('li');
+const crackHash = (networkData) => {
+  crackedHash.innerText = "SSID: " + networkData.ssid + ", ID: " + networkData.id + ", Auth Mode: " + securityProtocols.at(networkData.authmode);
+  crackedHashEntry.appendChild(crackedHash);
+  crackedHashList.appendChild(crackedHashEntry);
 };
 
 return (
@@ -106,7 +124,9 @@ return (
         
         <div className="postTextContainer text-center">  </div>
 
-        <div className="postTextContainer "> Data </div>
+        <div className="postTextContainer ">
+          <ul id="crackedHashList"></ul>
+        </div>
         
       </div>
     </div>
