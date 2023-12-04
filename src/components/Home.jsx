@@ -15,6 +15,8 @@ const {
   collection,
   getDocs,
   query,
+  doc,
+  updateDoc
 } = require('firebase/firestore');
 
 var securityProtocols = ["open", "WEP", "WPA_PSK", "WPA2_PSK", "WPA_WPA2_PSK", "WPA2_ENTERPRISE", "Unknown"];
@@ -57,8 +59,32 @@ var capturedNetworkList = document.getElementById("capturedNetworkList");
 var capturedNetworkEntry = document.createElement('div');
 capturedNetworkEntry.classList.add('network-entry');
 var capturedNetwork = document.createElement('li');
-const captureHandshake = (networkData) => {
+const captureHandshake = async (networkData) => {
   //  capture handshake logic here
+console.log(networkData);
+console.log(networkData.id);
+
+  const devicesQuery = query(collection(firestore, 'devices'));
+  const devicesSnapshot = await getDocs(devicesQuery);
+  const deviceDoc = devicesSnapshot.docs[0]; // Assuming there's only one document
+  console.log(networkData);
+  console.log(networkData.id);
+  console.log(deviceDoc);
+  if (deviceDoc) {
+    const deviceRef = doc(firestore, 'devices', deviceDoc.id);
+
+    // The rest of your updateDoc logic remains the same
+    await updateDoc(deviceRef, {
+      'test-params.network_id': networkData.id,
+      'test-params.test_type': 'capture',
+      'test': true
+    });
+
+    console.log('Document successfully updated!');
+  } else {
+    console.error('No documents found in the "devices" collection.');
+  }
+
   capturedNetwork.innerText = "SSID: " + networkData.ssid + ", ID: " + networkData.id + ", Auth Mode: " + securityProtocols.at(networkData.authmode);
   if (!capturedNetworkEntry.contains(capturedNetwork)) {
     capturedNetworkEntry.appendChild(capturedNetwork);
@@ -66,7 +92,9 @@ const captureHandshake = (networkData) => {
     var crackButton = document.createElement('button');
     crackButton.innerText = 'Crack Hash';
     crackButton.addEventListener("click", () => {
-      crackHash(networkData);
+      // Change button text to "Cracking..." when clicked
+      crackButton.innerText = 'Cracking...';
+      crackHash(networkData, crackButton);
     });
     
     capturedNetworkEntry.appendChild(crackButton);
@@ -78,10 +106,13 @@ var crackedHashList = document.getElementById("crackedHashList");
 var crackedHashEntry = document.createElement('div');
 crackedHashEntry.classList.add('cracked-hash-entry');
 var crackedHash = document.createElement('li');
-const crackHash = (networkData) => {
-  crackedHash.innerText = "SSID: " + networkData.ssid + ", ID: " + networkData.id + ", Auth Mode: " + securityProtocols.at(networkData.authmode);
-  crackedHashEntry.appendChild(crackedHash);
-  crackedHashList.appendChild(crackedHashEntry);
+const crackHash = (networkData,crackButton) => {
+  if (networkData.tests_passed && networkData.tests_passed.capture && networkData.tests_passed.hash) {
+    crackButton.innerText = 'Cracked';
+    crackedHash.innerText = "SSID: " + networkData.ssid  + ", Cracked Hash: " + networkData.tests_passed.hash;
+    crackedHashEntry.appendChild(crackedHash);
+    crackedHashList.appendChild(crackedHashEntry);
+  }
 };
 
 return (
@@ -103,7 +134,7 @@ return (
       </div>
       <div className="post">
         <div className="postHeader">
-        Capture Handshake
+        Captured Handshake
           
         </div>
         
@@ -119,7 +150,7 @@ return (
       <div className="post">
         <div className="postHeader">
           
-          Crack Hash
+          Cracked Hash
         </div>
         
         <div className="postTextContainer text-center">  </div>
