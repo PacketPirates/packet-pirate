@@ -47,7 +47,11 @@ function ClientNav() {
 
   const linksLogOut = [
    
-
+    {
+      id: 0,
+      link: "/About",
+      name: "About"
+    },
     {
       id: 1,
       link: "/Signup",

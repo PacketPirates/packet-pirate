@@ -14,7 +14,7 @@ const Signup = () => {
     e.preventDefault();
     try {
       await createUser(email, password);
-      navigate("/");
+      navigate("/Account");
     } catch (e) {
       setErrorMessage(
         "Already used email or password is not 6 or more characters!"
