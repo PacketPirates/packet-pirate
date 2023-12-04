@@ -16,7 +16,8 @@ const {
   getDocs,
   query,
   doc,
-  updateDoc
+  updateDoc,
+  onSnapshot
 } = require('firebase/firestore');
 
 var securityProtocols = ["open", "WEP", "WPA_PSK", "WPA2_PSK", "WPA_WPA2_PSK", "WPA2_ENTERPRISE", "Unknown"];
@@ -61,8 +62,8 @@ capturedNetworkEntry.classList.add('network-entry');
 var capturedNetwork = document.createElement('li');
 const captureHandshake = async (networkData) => {
   //  capture handshake logic here
-console.log(networkData);
-console.log(networkData.id);
+  console.log(networkData);
+  console.log(networkData.id);
 
   const devicesQuery = query(collection(firestore, 'devices'));
   const devicesSnapshot = await getDocs(devicesQuery);
@@ -94,7 +95,10 @@ console.log(networkData.id);
     crackButton.addEventListener("click", () => {
       // Change button text to "Cracking..." when clicked
       crackButton.innerText = 'Cracking...';
-      crackHash(networkData, crackButton);
+      
+      const crackListener = onSnapshot(doc(firestore, 'devices', deviceDoc.id, 'networks' , String(networkData.id)), (snapshot) => {
+        crackHash(snapshot.data(), crackButton);
+      });
     });
     
     capturedNetworkEntry.appendChild(crackButton);
