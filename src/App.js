@@ -7,6 +7,7 @@ import { Route, Routes } from "react-router-dom";
 import { AuthContextProvider } from "./context/AuthContext";
 import ClientNav from "./components/ClientNav";
 import Home from "./components/Home";
+import About from "./components/About";
 import ProtectedRoute from './components/ProtectedRoute.jsx';
 import "./App.css";
 
@@ -19,6 +20,7 @@ function App() {
           <Route exact path="/" element={<Landing />} />
           <Route path="/signin" element={<Signin />} />
           <Route path="/signup" element={<Signup />} />
+          <Route path="/about" element={<About />} />
           <Route
             path='/Home'
             element={

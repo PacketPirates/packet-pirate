@@ -22,6 +22,11 @@ function ClientNav() {
     navigate("/");
   };
   const links = [
+	{
+	  id: 0,
+	  link: "/About",
+	  name: "About"
+	},
     {
       id: 1,
       link: "/Home",
